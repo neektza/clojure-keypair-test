@@ -1,4 +1,4 @@
-(ns pav-keypairs-test.handler-test
+(ns pav-keypairs-test.encryption-test
   (:require [clojure.test :refer :all]
 						[ring.mock.request :refer [request body content-type header]]
 						[cheshire.core :refer [parse-string generate-string]]
@@ -17,7 +17,6 @@
 
 	(testing "Peformance based test, Log time taken to encrypt & decrypt the same payload
 						using fresh public/private RSA 2048 key with each iteration"
-
 		(time
 			(do
 				(println "Time Taken to encrypt & decrypt the same payload with different keys")
