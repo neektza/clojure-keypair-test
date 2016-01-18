@@ -1,16 +1,25 @@
 (ns pav-keypairs-test.handler-test
   (:require [clojure.test :refer :all]
-            [ring.mock.request :as mock]
-						[cheshire.core :refer [parse-string]]
+						[ring.mock.request :refer [request body content-type header]]
+						[cheshire.core :refer [parse-string generate-string]]
             [pav-keypairs-test.handler :refer :all]))
 
 
+(defn req [method url payload]
+	(app (content-type (request method url (generate-string payload)) "application/json")))
 
 (deftest test-app
-	(testing "Peformance based test, Log time taken to encrypt & decrypt payloads
+	(testing "Peformance based test, Log time taken to encrypt & decrypt the same payload
 						using fresh public/private RSA 2048 key with each iteration"
+
 		(time
-			(dotimes [_ 10]
-				(let [payload "John went to town"
-							body (-> (app (mock/request :get "/keys")) :body (parse-string true))]
-					(println public-key private-key))))))
+			(do
+				(println "Time Taken to encrypt & decrypt the same payload with different keys")
+				(dotimes [_ 10]
+					(let [payload "John went to town"
+								body (-> (req :get "/keys" {}) :body (parse-string true))
+								encryption-response (-> (req :post "/encrypt" {:public-key (:public-key body) :payload payload}) :body)
+								decrypted-response (-> (req :post "/decrypt" {:private-key (:private-key body) :payload encryption-response})
+																		 	 :body)
+								]
+						(is (= payload decrypted-response))))))))

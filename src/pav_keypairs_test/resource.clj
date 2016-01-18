@@ -1,6 +1,6 @@
 (ns pav-keypairs-test.resource
 	(:require [liberator.core :refer [defresource]]
-						[pav-keypairs-test.encryption-manager :refer [generate-keypair]]))
+						[pav-keypairs-test.encryption-manager :refer [generate-keypair encrypt decrypt]]))
 
 
 (defresource get-keys
@@ -8,10 +8,16 @@
 	:available-media-types ["application/json"]
 	:handle-ok (generate-keypair "RSA" 2048))
 
-(defresource encrypt
-	:allowed-methods [:get]
-	:available-media-types ["application/json"])
+(defresource encrypt-payload
+	:allowed-methods [:post]
+	:available-media-types ["application/json"]
+	:post! (fn [ctx] (let [{k :public-key p :payload} (get-in ctx [:request :body])]
+										 {:record (encrypt k p)}))
+	:handle-created :record)
 
-(defresource decrypt
-	:allowed-methods [:get]
-	:available-media-types ["application/json"])
+(defresource decrypt-payload
+	:allowed-methods [:post]
+	:available-media-types ["application/json"]
+	:post! (fn [ctx] (let [{k :private-key p :payload} (get-in ctx [:request :body])]
+										 {:record (decrypt k p)}))
+	:handle-created :record)

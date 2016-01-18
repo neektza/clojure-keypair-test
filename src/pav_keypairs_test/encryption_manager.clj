@@ -33,17 +33,3 @@
 				cipher (Cipher/getInstance "RSA")]
 		(.init cipher (Cipher/DECRYPT_MODE) key)
 		(String. (.doFinal cipher (.decode (Base64/getDecoder) payload)))))
-
-
-(comment
-	(let [payload "John went to town"
-				{public :public-key private :private-key} (generate-keypair "RSA" 2048)
-				encrypted (encrypt public payload)
-				decrypted (decrypt private encrypted)]
-		(println "Encrypted " encrypted)
-		(println "Decrypted " decrypted))
-
-	(time (generate-keypair "RSA" 1024))
-	(time (generate-keypair "RSA" 2048))
-	(time (generate-keypair "DH" 1024))
-	(time (generate-keypair "DSA" 1024)))
