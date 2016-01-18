@@ -6,7 +6,7 @@
 (defresource get-keys
 	:allowed-methods [:get]
 	:available-media-types ["application/json"]
-	:handle-ok (generate-keypair "RSA" 2048))
+	:handle-ok (generate-keypair))
 
 (defresource encrypt-payload
 	:allowed-methods [:post]

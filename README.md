@@ -1,18 +1,29 @@
-# pav-keypairs-test
+## Description
 
-FIXME
+This is a very trivial example of public/private key encryption using java.security API.  
 
-## Prerequisites
+The following Compojure API has three endpoints.
 
-You will need [Leiningen][] 2.0.0 or above installed.
+- /keys Used to retrieve a new RSA 2048 private & public key
+- /encrypt Takes a public key and payload and encrypts the payload
+- /decrypt Takes the private key and payload and decrypts the payload
 
-[leiningen]: https://github.com/technomancy/leiningen
+To see how to interact with the API. See pav-keypairs-test.handler-test.
 
-## Running
+## Task
 
-To start a web server for the application, run:
+Your task is to optimise the creation of the public/private keys in the pav-keypairs-test.encryption-manager namespace.  
+Creating a new key pair with every request is an expensive operation but for this particular scenario they can be pre-computed 
+upfront and made available for quick retrieval.
 
-    lein ring server
+### Restrictions
+
+- The same key pair should never be issued twice
+    
+## Run performance based test
+
+    lein test
+    lein test-refresh ;;nice for TDD approach
 
 ## License
 

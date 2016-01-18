@@ -4,21 +4,22 @@
 					 (java.security.spec X509EncodedKeySpec PKCS8EncodedKeySpec)
 					 (javax.crypto Cipher)))
 
-(defn generate-keypair
+(def algo "RSA")
+(def num-of-bytes 2048)
+
+(defn generate-keypair []
 	"Retrieve keypair using a chosen algorithm"
-	([algo] (generate-keypair algo 2048))
-	([algo num-of-bytes]
-	 (let [generator (KeyPairGenerator/getInstance algo)
-				 _ (.initialize generator num-of-bytes)
-				 keypair (.genKeyPair generator)
-				 private-key-bytes (.getEncoded (.getPrivate keypair))
-				 public-key-bytes (.getEncoded (.getPublic keypair))]
-		 {:public-key  (.encodeToString (Base64/getEncoder) public-key-bytes)
-			:private-key (.encodeToString (Base64/getEncoder) private-key-bytes)})))
+	(let [generator (KeyPairGenerator/getInstance algo)
+				_ (.initialize generator num-of-bytes)
+				keypair (.genKeyPair generator)
+				private-key-bytes (.getEncoded (.getPrivate keypair))
+				public-key-bytes (.getEncoded (.getPublic keypair))]
+		{:public-key  (.encodeToString (Base64/getEncoder) public-key-bytes)
+		 :private-key (.encodeToString (Base64/getEncoder) private-key-bytes)}))
 
 (defn encrypt [public-key payload]
 	"Use public RSA key to encrypt the payload and return as Base64 string"
-	(let [factory (KeyFactory/getInstance "RSA")
+	(let [factory (KeyFactory/getInstance algo)
 				public-key-bytes (.decode (Base64/getDecoder) public-key)
 				key (.generatePublic factory (X509EncodedKeySpec. public-key-bytes))
 				cipher (Cipher/getInstance "RSA")]
@@ -27,7 +28,7 @@
 
 (defn decrypt [private-key payload]
 	"Use public RSA key to decrypt the payload"
-	(let [factory (KeyFactory/getInstance "RSA")
+	(let [factory (KeyFactory/getInstance algo)
 				private-key-bytes (.decode (Base64/getDecoder) private-key)
 				key (.generatePrivate factory (PKCS8EncodedKeySpec. private-key-bytes))
 				cipher (Cipher/getInstance "RSA")]
