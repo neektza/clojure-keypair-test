@@ -10,6 +10,7 @@
 								 [ring/ring-json "0.3.1" :exclusions [ring/ring-core]]]
   :plugins [[lein-ring "0.9.7"]
 						[com.jakemccrary/lein-test-refresh "0.11.0"]
+            [lein-release "1.0.5"]
 						[lein-essthree "0.2.1"]]
 	:essthree {:deploy {:type :library
 											:bucket "pav-maven-artifact-repository"
@@ -17,6 +18,10 @@
 											:sign-releases true
 											:checksum      :fail
 											:update        :always}}
+  :lein-release {:scm :git
+                 :deploy-via :shell
+                 :shell ["lein" "essthree"]
+                 :build-uberjar true}
   :ring {:handler pav-keypairs-test.handler/app}
   :profiles
   {:dev {:dependencies [[javax.servlet/servlet-api "2.5"]
