@@ -19,8 +19,8 @@
 						using fresh public/private RSA 2048 key with each iteration"
 		(time
 			(do
-				(println "Time Taken to encrypt & decrypt the same payload with different keys, Please make me faster...")
-				(dotimes [_ 10]
+				(println "Time Taken to encrypt & decrypt the same payload with different keys, Please make me faster, on average I take 50 seconds to do 50 round trips..")
+				(dotimes [_ 50]
 					(let [payload "John went to town"
 								body (-> (req :get "/keys" {}) :body (parse-string true))
 								encryption-response (-> (req :post "/encrypt" {:public-key (:public-key body) :payload payload})
