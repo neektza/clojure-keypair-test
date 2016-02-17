@@ -1,12 +1,13 @@
 (ns pav-keypairs-test.resource
 	(:require [liberator.core :refer [defresource]]
-						[pav-keypairs-test.encryption-manager :refer [generate-keypair encrypt decrypt]]))
+			  [pav-keypairs-test.encryption-manager :refer [encrypt decrypt make-keypair-handler]]))
 
+(def keypair-handler (make-keypair-handler))
 
 (defresource get-keys
 	:allowed-methods [:get]
 	:available-media-types ["application/json"]
-	:handle-ok (generate-keypair))
+	:handle-ok (keypair-handler))
 
 (defresource encrypt-payload
 	:allowed-methods [:post]
